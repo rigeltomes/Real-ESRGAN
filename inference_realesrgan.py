@@ -17,9 +17,8 @@ def main():
         '-n',
         '--model_name',
         type=str,
-        default='RealESRGAN_x4plus',
-        help=('Model names: RealESRGAN_x4plus | RealESRNet_x4plus | RealESRGAN_x4plus_anime_6B | RealESRGAN_x2plus | '
-              'realesr-animevideov3'))
+        default='4x_eula_digimanga_bw_v1_860k',
+        help=('Model names: RealESRGAN_x4plus | RealESRNet_x4plus | RealESRGAN_x4plus_anime_6B | RealESRGAN_x2plus | realesr-animevideov3 | 2x_MangaScaleV3 | 4x_eula_digimanga_bw_v1_860k'))
     parser.add_argument('-o', '--output', type=str, default='results', help='Output folder')
     parser.add_argument('-s', '--outscale', type=float, default=4, help='The final upsampling scale of the image')
     parser.add_argument('--suffix', type=str, default='out', help='Suffix of the restored image')
@@ -46,13 +45,13 @@ def main():
 
     # determine models according to model names
     args.model_name = args.model_name.split('.')[0]
-    if args.model_name in ['RealESRGAN_x4plus', 'RealESRNet_x4plus']:  # x4 RRDBNet model
+    if args.model_name in ['RealESRGAN_x4plus', 'RealESRNet_x4plus', '4x_eula_digimanga_bw_v1_860k']:  # x4 RRDBNet model
         model = RRDBNet(num_in_ch=3, num_out_ch=3, num_feat=64, num_block=23, num_grow_ch=32, scale=4)
         netscale = 4
     elif args.model_name in ['RealESRGAN_x4plus_anime_6B']:  # x4 RRDBNet model with 6 blocks
         model = RRDBNet(num_in_ch=3, num_out_ch=3, num_feat=64, num_block=6, num_grow_ch=32, scale=4)
         netscale = 4
-    elif args.model_name in ['RealESRGAN_x2plus']:  # x2 RRDBNet model
+    elif args.model_name in ['RealESRGAN_x2plus', '2x_MangaScaleV3']:  # x2 RRDBNet model
         model = RRDBNet(num_in_ch=3, num_out_ch=3, num_feat=64, num_block=23, num_grow_ch=32, scale=2)
         netscale = 2
     elif args.model_name in ['realesr-animevideov3']:  # x4 VGG-style model (XS size)
