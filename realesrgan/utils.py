@@ -7,6 +7,7 @@ import threading
 import torch
 from basicsr.utils.download_util import load_file_from_url
 from torch.nn import functional as F
+from realesrgan.conversion import convert_keys_from_old_ESRGAN
 
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -59,7 +60,13 @@ class RealESRGANer():
             keyname = 'params_ema'
         else:
             keyname = 'params'
-        model.load_state_dict(loadnet[keyname], strict=True)
+
+        if keyname not in loadnet.keys():
+            state = convert_keys_from_old_ESRGAN(loadnet)
+        else:
+            state = loadnet[keyname]
+
+        model.load_state_dict(state, strict=True)
         model.eval()
         self.model = model.to(self.device)
         if self.half:
